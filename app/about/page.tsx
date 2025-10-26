@@ -18,7 +18,7 @@ export default function AboutPage() {
           />
         </div>
       </div>
-      <div className="flex flex-col grow  dark:bg-black w-full max-w-7xl mx-auto p-4 pt-24 gap-8 text-xl text-gray-600">
+      <div className="flex flex-col grow w-full max-w-7xl mx-auto p-4 pt-24 gap-8 text-xl text-gray-600">
         <p className="font-semibold text-3xl text-black">Nost Copy</p>
         Nost Copy, hızlı ve kaliteli çözümler sunmak, taleplere alternatif
         çözümler üretmek, planlama, baskı ve sonuçlandırma aşamalarına kadar

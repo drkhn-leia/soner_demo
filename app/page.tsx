@@ -7,7 +7,7 @@ import BlogArea from "@/components/blog/component";
 
 export default function Home() {
   return (
-    <div className="flex grow flex-col font-sans dark:bg-black overflow-x-hidden">
+    <div className="flex grow flex-col font-sans overflow-x-hidden">
       <Full_W_Carousel />
       <InfoCard />
       <ParallaxImage />

@@ -9,7 +9,7 @@ export default function Header() {
   ];
 
   return (
-    <div className="flex min-w-max h-20 bg-zinc-50 font-sans dark:bg-gray-900">
+    <div className="flex min-w-max h-20 font-sans">
       <div className="flex items-center w-full justify-between pl-36">
         <a className="text-2xl font-semibold cursor-pointer" href="#">
           Nost Copy
