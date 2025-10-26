@@ -1,0 +1,62 @@
+{
+  "images": [
+    {
+      "id": 1,
+      "title": "Photography",
+      "body": "Bootstrap Carousel Example",
+      "imageUrl": "https://picsum.photos/2000/400?random=0",
+      "docs": "https://getbootstrap.com/docs/4.0/components/carousel/"
+    },
+    {
+      "id": 2,
+      "title": "City Views",
+      "body": "Bootstrap Carousel Example",
+      "imageUrl": "https://picsum.photos/2000/400?random=1",
+      "docs": "https://getbootstrap.com/docs/4.0/components/carousel/"
+    },
+    {
+      "id": 3,
+      "title": "Wild Life",
+      "body": "Bootstrap Carousel Example",
+      "imageUrl": "https://picsum.photos/2000/400?random=2",
+      "docs": "https://getbootstrap.com/docs/4.0/components/carousel/"
+    },
+    {
+      "id": 4,
+      "title": "Foods and Culture",
+      "body": "Bootstrap Carousel Example",
+      "imageUrl": "https://picsum.photos/2000/400?random=3",
+      "docs": "https://getbootstrap.com/docs/4.0/components/carousel/"
+    }
+  ],
+  "blogs": [
+    {
+      "id": 1,
+      "title": "Kutu Basımı",
+      "summary": "Ofset kutular özellikle küçük ev aletleri sektörü ve ürünlerini çok daha etkin gösterebilmek adına tercih eden firmalar için en elverişli kutulardan biridir. Farklı kapanma çeşitleri ve plastik kulp aparatı sayesinde kutunun isterseniz çanta tarzı elde taşınmasını sağlayabilirsiniz.",
+      "imageUrl": "/kutu-basimi_441_.jpg",
+      "link": "/blog/kutu-basimi"
+    },
+    {
+      "id": 2,
+      "title": "Kuşe Baskılı Kapaklı Ajanda / Defter",
+      "summary": "Firmaların promosyon olarak tercih ettikleri ürünlerin başında spiralli defter gelmektedir. Spiralli defter kolay kullanımı, geniş zaman aralığında kullanılabilir oluşu, sayfaların kolay sökülmesi ve daha bir çok avantajı sebebiyle kullanılmaktadır.",
+      "imageUrl": "/kus-e-baskili-kapakli-ajanda-defter_261_.jpg",
+      "link": "/blog/city-life-adventures"
+    },
+    {
+      "id": 3,
+      "title": "Taçlı Bloknot",
+      "summary": "Temel olarak üstten tutkallı bloknotlar için ebatlarına göre 3 ayrı kategori oluşturabiliriz. Buna göre seçimlerinizi yapabilir baskıda bize güvenebilirsiniz.",
+      "imageUrl": "/tacli-bloknot_647_.jpg",
+      "link": "/blog/culinary-travels"
+    },
+    {
+      "id": 4,
+      "title": "4 Mekanizmalı Klasör",
+      "summary": "Kollu mekanizmalı kırtasiye klasör tanıtımda çoklu evrak sunumunda kurumsal kimliğinizin gücünüzü göstereceksiniz. Nasıl mı? raflarda diğer klasörlerle rekabet ederek tasarımınızla kalıcılığın simgesi olacaksınız. Firmanıza özel tasarımları bir renk kombinasyonu uygulamak gerekiyor bu tasarım tarafımızdan size özel hazırlanacaktır. Klasörler kurumsal kimliğinize değer katacaktır. Müşterinize de güven verecek. Başarıyla kurgulanmış 2’li mekanizmalı klasör, rakiplerinizden önde algılanmanızı sağlayacak, uzun vadede kalıcı müşteri kazanacaksınız.",
+      "imageUrl": "/4-mekanizmali-klasor_487_.jpg",
+      "link": "/blog/wildlife-encounters"
+    }
+  ]
+}
