@@ -7,9 +7,9 @@ import {
   FaInstagram,
   FaYoutube,
 } from "react-icons/fa";
-
 import type { IconType } from "react-icons";
 import Image from "next/image";
+import Link from "next/link";
 
 const urunvehizmetler = [
   { name: "Baklava Kutuları", link: "#" },
@@ -34,11 +34,11 @@ const iletisim = [
   {
     name: "Yakuplu, Başakkent Cd. 3. Matbaacılar Sit. No:1, 34524 Beylikdüzü/İstanbul",
     icon: "FaMapMarkerAlt",
-    link: "#",
+    link: "https://maps.app.goo.gl/", // dilediğiniz harita linki
   },
-  { name: "0212 612 65 22", icon: "FaPhoneAlt", link: "#" },
-  { name: "0541 383 04 49", icon: "FaPhoneAlt", link: "#" },
-  { name: "info@cbambalaj.com", icon: "FaEnvelope", link: "#" },
+  { name: "0212 612 65 22", icon: "FaPhoneAlt", link: "" },
+  { name: "0541 383 04 49", icon: "FaPhoneAlt", link: "" },
+  { name: "info@cbambalaj.com", icon: "FaEnvelope", link: "" },
 ];
 
 const iconMap: Record<string, IconType> = {
@@ -53,103 +53,165 @@ const instagramUrl = "http://www.nostcopy.com/";
 const youtubeUrl = "http://www.nostcopy.com/";
 
 export default function Footer() {
+  // Link otomasyonu (telefon/e-posta için)
+  const resolveContactHref = (item: (typeof iletisim)[number]) => {
+    if (item.icon === "FaPhoneAlt") {
+      // Rakamları temizleyip tel: şemasına çevir
+      const digits = item.name.replace(/[^\d+]/g, "");
+      return `tel:${digits}`;
+    }
+    if (item.icon === "FaEnvelope") {
+      return `mailto:${item.name}`;
+    }
+    return item.link || "#";
+  };
+
   return (
-    <>
-      <div className="flex min-w-max items-center justify-center h-96 mt-16 font-sans bg-black text-white">
-        <div className="flex flex-row justify-center items-start space-x-32">
-          <div>
-            <h1 className="text-4xl font-bold mb-4">Nost Copy</h1>
-            <p className="text-lg">Your go-to source for all things Nost.</p>
-            <Image
-              src={"/nost.png"}
-              alt="nost_logo"
-              width={200}
-              height={200}
-              className="mt-4 p-4"
-            />
+    <footer className="font-sans bg-black text-white" role="contentinfo">
+      {/* Üst bölüm */}
+      <div className="mx-auto max-w-7xl px-6 sm:px-8 py-12 sm:py-14 lg:py-16">
+        <div
+          className="
+            grid grid-cols-1 gap-10
+            sm:grid-cols-2
+            lg:grid-cols-3
+          "
+        >
+          {/* Sol: Marka + kısa metin */}
+          <div className="text-center sm:text-left">
+            <h1 className="text-3xl sm:text-4xl font-bold mb-3">Nost Copy</h1>
+            <p className="text-base sm:text-lg text-gray-300">
+              Your go-to source for all things Nost.
+            </p>
+            <div className="mt-6 flex justify-center sm:justify-start">
+              <Image
+                src="/nost.png"
+                alt="Nost Copy logo"
+                width={160}
+                height={160}
+                className="p-2"
+                priority
+              />
+            </div>
           </div>
 
-          <ul className="text-gray-300">
-            <li className="text-xl font-semibold pb-4">Ürün ve Hizmetler</li>
-            {urunvehizmetler.map((item) => (
-              <li key={item.name} className="mb-2">
-                <a
-                  href={item.link}
-                  className="hover:underline hover:text-white"
-                >
-                  {item.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-          <ul className="text-gray-300">
-            <li className="text-xl font-semibold pb-4">Kurumsal</li>
-            {kurumsal.map((item) => (
-              <li key={item.name} className="mb-2">
-                <a
-                  href={item.link}
-                  className="hover:underline hover:text-white"
-                >
-                  {item.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          <ul className="text-gray-300 max-w-64">
-            <li className="text-xl font-semibold pb-4">İletişim</li>
-            {iletisim.map((item) => {
-              const Icon = iconMap[item.icon];
-              return (
-                <li key={item.name} className="mb-2">
-                  <p className="hover:underline hover:text-white flex items-center gap-4 cursor-pointer">
-                    {Icon ? <Icon aria-hidden className="shrink-0" /> : null}
-                    <span>{item.name}</span>
-                  </p>
+          {/* Orta: Ürün ve Hizmetler */}
+          <nav aria-label="Ürün ve Hizmetler" className="text-center sm:text-left">
+            <h2 className="text-xl font-semibold pb-4">Ürün ve Hizmetler</h2>
+            <ul className="space-y-2 text-gray-300">
+              {urunvehizmetler.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href={item.link}
+                    className="hover:underline hover:text-white inline-block py-1"
+                  >
+                    {item.name}
+                  </Link>
                 </li>
-              );
-            })}
-            <div className="flex flex-row text-2xl pt-4">
-              {
-                /* Social Media Links */
-                facebookUrl ? (
+              ))}
+            </ul>
+          </nav>
+
+          {/* Sağ: Kurumsal + İletişim (lg’de yan yana, küçükte alt alta) */}
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-1">
+            <nav aria-label="Kurumsal" className="text-center sm:text-left">
+              <h2 className="text-xl font-semibold pb-4">Kurumsal</h2>
+              <ul className="space-y-2 text-gray-300">
+                {kurumsal.map((item) => (
+                  <li key={item.name}>
+                    <Link
+                      href={item.link}
+                      className="hover:underline hover:text-white inline-block py-1"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <address className="not-italic text-center sm:text-left">
+              <h2 className="text-xl font-semibold pb-4">İletişim</h2>
+              <ul className="space-y-3 text-gray-300">
+                {iletisim.map((item) => {
+                  const Icon = iconMap[item.icon];
+                  const href = resolveContactHref(item);
+                  const isExternal = href.startsWith("http");
+                  const commonClasses =
+                    "hover:underline hover:text-white inline-flex items-center gap-3 py-1 justify-center sm:justify-start";
+                  return (
+                    <li key={item.name}>
+                      <a
+                        href={href}
+                        {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                        className={commonClasses}
+                      >
+                        {Icon ? <Icon aria-hidden className="shrink-0" /> : null}
+                        <span className="max-w-[22rem] text-sm sm:text-base">{item.name}</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              {/* Sosyal ikonlar */}
+              <div className="flex justify-center sm:justify-start gap-4 text-2xl pt-5">
+                {facebookUrl && (
                   <a
                     href={facebookUrl}
-                    className="mr-4 hover:underline hover:text-white"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook"
+                    className="hover:text-white text-gray-300"
                   >
                     <FaFacebookF />
                   </a>
-                ) : null
-              }
-              {twitterUrl ? (
-                <a
-                  href={twitterUrl}
-                  className="mr-4 hover:underline hover:text-white"
-                >
-                  <FaTwitter />
-                </a>
-              ) : null}
-              {instagramUrl ? (
-                <a
-                  href={instagramUrl}
-                  className="mr-4 hover:underline hover:text-white"
-                >
-                  <FaInstagram />
-                </a>
-              ) : null}
-              {youtubeUrl ? (
-                <a
-                  href={youtubeUrl}
-                  className="mr-4 hover:underline hover:text-white"
-                >
-                  <FaYoutube />
-                </a>
-              ) : null}
-            </div>
-          </ul>
+                )}
+                {twitterUrl && (
+                  <a
+                    href={twitterUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Twitter / X"
+                    className="hover:text-white text-gray-300"
+                  >
+                    <FaTwitter />
+                  </a>
+                )}
+                {instagramUrl && (
+                  <a
+                    href={instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                    className="hover:text-white text-gray-300"
+                  >
+                    <FaInstagram />
+                  </a>
+                )}
+                {youtubeUrl && (
+                  <a
+                    href={youtubeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="YouTube"
+                    className="hover:text-white text-gray-300"
+                  >
+                    <FaYoutube />
+                  </a>
+                )}
+              </div>
+            </address>
+          </div>
         </div>
       </div>
-      <p className="px-4">Copyright © 2024 - Nost Copy | All rights reserved.</p>
-    </>
+
+      {/* Alt bar */}
+      <div className="border-t border-white/10">
+        <p className="mx-auto max-w-7xl px-6 sm:px-8 py-4 text-center text-sm text-gray-300">
+          Copyright © 2024 — Nost Copy · All rights reserved.
+        </p>
+      </div>
+    </footer>
   );
 }

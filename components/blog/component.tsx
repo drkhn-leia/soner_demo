@@ -38,8 +38,8 @@ export default function BlogArea() {
   }, []);
 
   return (
-    <div>
-      <div className="w-full flex text-center justify-center py-10 mt-10 text-5xl font-semibold">
+    <div className="flex flex-col mx-10">
+      <div className="w-full flex text-center justify-center py-10 mt-10 text-5xl font-semibold ">
         BLOG
       </div>
       <div className="flex flex-row gap-8 justify-center pb-10">

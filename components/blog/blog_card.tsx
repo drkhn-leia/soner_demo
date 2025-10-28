@@ -19,7 +19,7 @@ export default function BlogCard({
     summary.length > 100 ? summary.substring(0, 100).trim() + "..." : summary;
 
   return (
-    <div className="flex text-center justify-center py-10 bg-white h-auto w-80 rounded-lg shadow-md p-4">
+    <div className="flex text-center justify-center py-10 bg-white h-auto w-80 rounded-lg drop-shadow-lg shadow-black p-4">
       <div className="flex flex-col gap-4">
         <Image
           src={imageUrl}
