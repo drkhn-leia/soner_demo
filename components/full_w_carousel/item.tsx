@@ -15,62 +15,10 @@ type CarouselItem = {
 const DATA_URL = "/items.json";
 
 export default function Full_W_Carousel() {
-  const [opacities, setOpacities] = React.useState<number[]>([]);
   const [images, setImages] = React.useState<string[]>([]);
   const [error, setError] = React.useState<string | null>(null);
-  const [loaded, setLoaded] = React.useState<boolean[]>([]);
-
-  // Keen: hem ref (container’a takacağız) hem de instanceRef (update için)
-  const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
-    {
-      initial: 0,
-      loop: true,
-      slides: { perView: 1 },
-      detailsChanged(s) {
-        if (!s.track?.details) return;
-        setOpacities(s.track.details.slides.map((sl) => sl.portion));
-      },
-    },
-    [
-      (slider) => {
-        // basit autoplay
-        let t: ReturnType<typeof setTimeout>;
-        let over = false;
-        const clear = () => clearTimeout(t);
-        const next = () => {
-          clearTimeout(t);
-          if (over) return;
-          t = setTimeout(() => slider.next(), 5000);
-        };
-        slider.on("created", () => {
-          slider.container.addEventListener("mouseover", () => {
-            over = true;
-            clear();
-          });
-          slider.container.addEventListener("mouseout", () => {
-            over = false;
-            next();
-          });
-          next();
-        });
-        slider.on("dragStarted", clear);
-        slider.on("animationEnded", next);
-        slider.on("updated", next);
-      },
-    ]
-  );
-
-  // Kapsayıcıyı ayrıca tutalım ki ResizeObserver bağlayalım
-  const containerRef = React.useRef<HTMLDivElement | null>(null);
-
-  // ref’i kombine edelim (hem keen’in ref’i hem kendi containerRef’imiz)
-  const combinedRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      containerRef.current = node ?? null;
-      sliderRef(node as HTMLDivElement);
-    },
-    [sliderRef]
-  );
+  const [currentSlide, setCurrentSlide] = React.useState(0);
+  const [created, setCreated] = React.useState(false);
 
   React.useEffect(() => {
     let cancelled = false;
@@ -79,11 +27,7 @@ export default function Full_W_Carousel() {
         const res = await fetch(DATA_URL, { cache: "no-store" });
         if (!res.ok) throw new Error(`Failed to load ${DATA_URL}`);
         const json: { images: CarouselItem[] } = await res.json();
-        if (!cancelled) {
-          const list = (json.images || []).map((i) => i.imageUrl);
-          setImages(list);
-          setLoaded(new Array(list.length).fill(false));
-        }
+        if (!cancelled) setImages((json.images || []).map((i) => i.imageUrl));
       } catch (e: any) {
         if (!cancelled) setError(e?.message || "Failed to load images");
       }
@@ -93,81 +37,180 @@ export default function Full_W_Carousel() {
     };
   }, []);
 
-  // 🧭 Container boyutu değişince slider’ı güncelle
-  React.useEffect(() => {
-    if (!containerRef.current) return;
-    const ro = new ResizeObserver(() => {
-      instanceRef.current?.update?.();
-    });
-    ro.observe(containerRef.current);
-    return () => ro.disconnect();
-  }, [instanceRef]);
+  // Keen Slider + autoplay + ok/nokta state'leri
+  const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
+    {
+      initial: 0,
+      loop: true,
+      slides: { perView: 1 },
+      slideChanged(slider) {
+        setCurrentSlide(slider.track.details.rel);
+      },
+      created() {
+        setCreated(true);
+      },
+    },
+    [
+      (slider) => {
+        let timeout: ReturnType<typeof setTimeout>;
+        let mouseOver = false;
 
-  // 🧭 Breakpoint/responsive değişimlerinde de garanti olsun
-  React.useEffect(() => {
-    const handler = () => instanceRef.current?.update?.();
-    window.addEventListener("orientationchange", handler);
-    window.addEventListener("resize", handler);
-    return () => {
-      window.removeEventListener("orientationchange", handler);
-      window.removeEventListener("resize", handler);
-    };
-  }, [instanceRef]);
+        function clearNextTimeout() {
+          clearTimeout(timeout);
+        }
+        function nextTimeout() {
+          clearTimeout(timeout);
+          if (mouseOver || document.hidden) return;
+          timeout = setTimeout(() => slider.next(), 2500); // autoplay süresi
+        }
+
+        slider.on("created", () => {
+          slider.container.addEventListener("mouseover", () => {
+            mouseOver = true;
+            clearNextTimeout();
+          });
+          slider.container.addEventListener("mouseout", () => {
+            mouseOver = false;
+            nextTimeout();
+          });
+          const vis = () => nextTimeout();
+          document.addEventListener("visibilitychange", vis);
+          slider.on("destroyed", () => {
+            document.removeEventListener("visibilitychange", vis);
+          });
+          nextTimeout();
+        });
+
+        slider.on("dragStarted", clearNextTimeout);
+        slider.on("animationEnded", nextTimeout);
+        slider.on("updated", nextTimeout);
+      },
+    ]
+  );
 
   if (error) return <div className="text-red-600">{error}</div>;
+
+  // Veri gelene kadar placeholder alan
   if (images.length === 0) {
     return (
-      <div className="hidden md:flex w-full h-96 md:h-[48rem] lg:h-96 relative items-center justify-center">
-        <div aria-label="Yükleniyor" className="w-10 h-10 border-4 border-black/40 border-t-transparent rounded-full animate-spin" />
-      </div>
+      <div className="relative w-full h-64 md:h-[24rem] lg:h-96 bg-[url('/carousel_placeholder.png')] bg-cover bg-center" />
     );
   }
 
+  const total =
+    instanceRef.current?.track.details.slides.length ?? images.length;
+
   return (
-    <div className="hidden md:flex w-full relative">
+    <div className="relative w-full">
+      {/* Slider: sm h-64, md 24rem, lg h-96 */}
       <div
-        ref={combinedRef}
-        className="keen-slider relative w-full h-96 md:h-[48rem] lg:h-96 overflow-hidden"
+        ref={sliderRef}
+        className="keen-slider relative w-full h-64 md:h-[24rem] lg:h-96 overflow-hidden"
       >
         {images.map((src, idx) => (
-          <div key={idx} className="keen-slider__slide relative h-full min-h-0">
-            {!loaded[idx] && (
-              <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10">
-                <div aria-label="Yükleniyor" className="w-10 h-10 border-4 border-white/60 border-t-transparent rounded-full animate-spin" />
-              </div>
-            )}
+          <div key={idx} className="keen-slider__slide relative h-full">
+            {/* Placeholder arka plan (görsel yüklenene kadar da görselin altında kalır) */}
+            <div className="absolute inset-0 bg-[url('/carousel_placeholder.png')] bg-cover bg-center" />
+            {/* Görsel: lazy yok */}
             <Image
               src={src}
-              alt={`image-${idx + 1}`}
+              alt={`carousel-${idx + 1}`}
               fill
               className="object-cover"
-              style={{ opacity: opacities[idx] ?? 1 }}
-              onLoadingComplete={() => {
-                setLoaded((prev) => {
-                  const copy = [...prev];
-                  copy[idx] = true;
-                  return copy;
-                });
-                instanceRef.current?.update?.();
-              }}
+              loading="eager"
+              // LCP için sadece ilk görseli önceliklendirmek isterseniz:
+              // priority={idx === 0}
             />
           </div>
         ))}
+
+        {/* ——— Oklar ——— */}
+        {created && instanceRef.current && (
+          <>
+            <Arrow
+              dir="left"
+              onClick={(e) => {
+                e.stopPropagation();
+                instanceRef.current?.prev();
+              }}
+            />
+            <Arrow
+              dir="right"
+              onClick={(e) => {
+                e.stopPropagation();
+                instanceRef.current?.next();
+              }}
+            />
+          </>
+        )}
+
+        {/* ——— Ortalanmış başlık (select-none) ——— */}
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center text-center select-none px-4">
+          <h2
+            className="text-white font-bold
+                       text-xl sm:text-2xl md:text-5xl lg:text-6xl
+                       drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)]"
+          >
+            Baskıda Kaliteli Hizmet
+          </h2>
+        </div>
       </div>
 
-      {/* === ORTALANMIŞ YAZI === */}
-      <div className="absolute inset-0 flex items-center justify-center text-center z-20">
-        <h2
-          className="
-            text-white font-bold
-            text-2xl sm:text-3xl md:text-5xl lg:text-6xl
-            drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]
-            px-4
-          "
-        >
-          Baskıda Kaliteli Hizmet
-        </h2>
-      </div>
+      {/* ——— Noktalar ——— */}
+      {created && instanceRef.current && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
+          {Array.from({ length: total }).map((_, idx) => (
+            <button
+              key={idx}
+              aria-label={`Slayt ${idx + 1}`}
+              onClick={() => instanceRef.current?.moveToIdx(idx)}
+              className={[
+                "h-2.5 w-2.5 rounded-full transition-all",
+                currentSlide === idx
+                  ? "bg-white scale-110 shadow"
+                  : "bg-white/50 hover:bg-white/70",
+              ].join(" ")}
+            />
+          ))}
+        </div>
+      )}
     </div>
+  );
+}
+
+/** Basit ok butonu (sol/sağ), Tailwind ile konumlandırma */
+function Arrow({
+  dir,
+  onClick,
+}: {
+  dir: "left" | "right";
+  onClick: (e: React.MouseEvent) => void;
+}) {
+  const pos = dir === "left" ? "left-2 md:left-3" : "right-2 md:right-3";
+
+  return (
+    <button
+      type="button"
+      aria-label={dir === "left" ? "Önceki slayt" : "Sonraki slayt"}
+      onClick={onClick}
+      className={`absolute top-1/2 -translate-y-1/2 ${pos} z-30
+                  inline-flex items-center justify-center
+                  h-9 w-9 md:h-10 md:w-10 rounded-full
+                  bg-black/40 hover:bg-black/55 backdrop-blur
+                  text-white transition focus:outline-none focus:ring-2 focus:ring-white/70`}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5 md:h-6 md:w-6"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+        {dir === "left" ? (
+          <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+        ) : (
+          <path d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+        )}
+      </svg>
+    </button>
   );
 }

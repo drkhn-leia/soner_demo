@@ -11,7 +11,6 @@ export default function Home() {
       <Full_W_Carousel />
       <InfoCard />
       <ParallaxImage />
-      <DoubleCard />
       <ReferansBand />
       <BlogArea />
     </div>
