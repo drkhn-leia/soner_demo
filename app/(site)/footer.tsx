@@ -53,10 +53,8 @@ const instagramUrl = "http://www.nostcopy.com/";
 const youtubeUrl = "http://www.nostcopy.com/";
 
 export default function Footer() {
-  // Link otomasyonu (telefon/e-posta için)
   const resolveContactHref = (item: (typeof iletisim)[number]) => {
     if (item.icon === "FaPhoneAlt") {
-      // Rakamları temizleyip tel: şemasına çevir
       const digits = item.name.replace(/[^\d+]/g, "");
       return `tel:${digits}`;
     }
@@ -69,14 +67,8 @@ export default function Footer() {
   return (
     <footer className="font-sans bg-black text-white" role="contentinfo">
       {/* Üst bölüm */}
-      <div className="mx-auto max-w-7xl px-6 sm:px-8 py-12 sm:py-14 lg:py-16">
-        <div
-          className="
-            grid grid-cols-1 gap-10
-            sm:grid-cols-2
-            lg:grid-cols-3
-          "
-        >
+      <div className="mx-auto w-full flex flex-row justify-center px-6 sm:px-8 py-12 sm:py-14 lg:py-16">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl w-full">
           {/* Sol: Marka + kısa metin */}
           <div className="text-center sm:text-left">
             <h1 className="text-3xl sm:text-4xl font-bold mb-3">Nost Copy</h1>
@@ -96,7 +88,10 @@ export default function Footer() {
           </div>
 
           {/* Orta: Ürün ve Hizmetler */}
-          <nav aria-label="Ürün ve Hizmetler" className="text-center sm:text-left">
+          <nav
+            aria-label="Ürün ve Hizmetler"
+            className="text-center sm:text-left"
+          >
             <h2 className="text-xl font-semibold pb-4">Ürün ve Hizmetler</h2>
             <ul className="space-y-2 text-gray-300">
               {urunvehizmetler.map((item) => (
@@ -112,7 +107,6 @@ export default function Footer() {
             </ul>
           </nav>
 
-          {/* Sağ: Kurumsal + İletişim (lg’de yan yana, küçükte alt alta) */}
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-1">
             <nav aria-label="Kurumsal" className="text-center sm:text-left">
               <h2 className="text-xl font-semibold pb-4">Kurumsal</h2>
@@ -129,7 +123,9 @@ export default function Footer() {
                 ))}
               </ul>
             </nav>
+          </div>
 
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-1">
             <address className="not-italic text-center sm:text-left">
               <h2 className="text-xl font-semibold pb-4">İletişim</h2>
               <ul className="space-y-3 text-gray-300">
@@ -143,11 +139,17 @@ export default function Footer() {
                     <li key={item.name}>
                       <a
                         href={href}
-                        {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                        {...(isExternal
+                          ? { target: "_blank", rel: "noopener noreferrer" }
+                          : {})}
                         className={commonClasses}
                       >
-                        {Icon ? <Icon aria-hidden className="shrink-0" /> : null}
-                        <span className="max-w-[22rem] text-sm sm:text-base">{item.name}</span>
+                        {Icon ? (
+                          <Icon aria-hidden className="shrink-0" />
+                        ) : null}
+                        <span className="max-w-[22rem] text-sm sm:text-base">
+                          {item.name}
+                        </span>
                       </a>
                     </li>
                   );
