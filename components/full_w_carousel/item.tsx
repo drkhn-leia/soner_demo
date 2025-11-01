@@ -4,7 +4,15 @@ import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import Image from "next/image";
 import Link from "next/link";
-// import type { CarouselItem } ... (sizde zaten var)
+
+type CarouselItem = {
+  id: number;
+  imageUrl: string;
+  title: string;
+  description: string;
+  buttonText: string;
+  buttonHref: string;
+};
 
 export default function Full_W_Carousel() {
   // 1) Tüm Hook'lar en üstte ve koşulsuz:
