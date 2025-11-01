@@ -11,8 +11,10 @@ export default function Header() {
   const linkList = [
     { href: "/", label: "Anasayfa" },
     { href: "/about", label: "Hakkımızda" },
+    { href: "/products", label: "Ürün ve Hizmetlerimiz" },
+    { href: "/ref", label: "Referanslar" },
+    { href: "/blog", label: "Blog" },
     { href: "/contact", label: "İletişim" },
-    { href: "/products", label: "Ürünlerimiz" },
   ];
 
   // Route değişince kapat
@@ -43,7 +45,7 @@ export default function Header() {
           </Link>
         </div>
         <div className="flex items-center w-full justify-end pr-36">
-          <ul className="flex gap-8 text-[1rem]">
+          <ul className="flex gap-4 text-[0.9rem]">
             {linkList.map(({ href, label }) => (
               <li key={href} className="hover:underline underline-offset-8">
                 <Link href={href}>{label}</Link>
@@ -116,7 +118,9 @@ export default function Header() {
           className={`
             flex-1 flex flex-col items-center justify-center
             transition-opacity duration-500 ease-in-out
-            ${open ? "opacity-100 bg-black/50" : "opacity-0 pointer-events-none"}
+            ${
+              open ? "opacity-100 bg-black/50" : "opacity-0 pointer-events-none"
+            }
           `}
         >
           <nav>

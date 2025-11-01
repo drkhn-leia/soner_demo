@@ -1,0 +1,102 @@
+:root {
+  --loader-dur: 650ms; /* çıkış animasyon süresi */
+  --loader-ease: ease-in-out;
+}
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity var(--loader-dur) var(--loader-ease);
+}
+
+.rootExit {
+  opacity: 0; /* paneller hareket ederken overlay de solsun */
+}
+
+/* Paneller */
+.panel {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: #1a1a1a; /* temayla uyum */
+  transition: transform var(--loader-dur) var(--loader-ease),
+    opacity var(--loader-dur) var(--loader-ease);
+  will-change: transform, opacity;
+  opacity: 1;
+}
+
+.top {
+  top: 0;
+  height: 50%;
+  box-shadow: 0 1px 18px rgba(0, 0, 0, 0.5);
+}
+
+.bottom {
+  bottom: 0;
+  height: 50%;
+  box-shadow: 0 -1px 18px rgba(0, 0, 0, 0.5);
+}
+
+/* Çıkışta yukarı/aşağı kay ve fade-out */
+.topExit {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+.bottomExit {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+/* Orta logo alanı */
+.brand {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  transition: opacity var(--loader-dur) var(--loader-ease),
+    transform var(--loader-dur) var(--loader-ease);
+  opacity: 1;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Hafif nabız/pulse (isteğe bağlı) — yalnızca çıkış öncesi */
+.brandPulse {
+  animation: brand-pulse 900ms var(--loader-ease) infinite alternate;
+}
+
+@keyframes brand-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.96);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.04);
+    opacity: 1;
+  }
+}
+
+/* Çıkış anında logo da hafif küçülerek ve soluklaşarak kaybolsun */
+.brandExit {
+  transform: translate(-50%, -50%) scale(0.92);
+  opacity: 0;
+}
+
+/* Görsel için ufak yumuşatma */
+.brandImg {
+  display: block;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.18));
+}
+
+/* Erişilebilirlik: hareket kısıtlıysa animasyonları kapat */
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .panel,
+  .brand {
+    transition: none !important;
+    animation: none !important;
+  }
+}
